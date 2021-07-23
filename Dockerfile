@@ -2,7 +2,7 @@ FROM php:5.6-apache
 
 RUN apt update
 
-RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick
+RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libapache2-mpm-itk && apt clean
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
@@ -21,3 +21,5 @@ RUN pecl install imagick && \
 
 RUN echo "upload_max_filesize = 128M;\npost_max_size = 128M\ndisplay_errors = Off\nmax_input_vars = 5000\nmax_allowed_packet=8M\nmax_execution_time=60\nmax_input_vars=10000\nmemory_limit=-1" > /usr/local/etc/php/conf.d/config.ini
 RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
+
+RUN a2enmod mpm_itk
