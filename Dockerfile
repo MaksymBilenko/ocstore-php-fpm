@@ -1,16 +1,14 @@
-FROM php:5.6-apache
+FROM php:7.4-apache
 
-RUN apt update
-
-RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libapache2-mpm-itk && apt clean
+RUN apt update && apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libapache2-mpm-itk && apt clean
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
-    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_5.6.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
+    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.4.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib --with-freetype-dir=/usr/lib && \
-    docker-php-ext-install -j $(nproc) mysql mysqli xsl zip bz2 opcache soap gd
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype &&\
+    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd
 
 RUN pecl install imagick && \
     echo 'extension=imagick.so' > /usr/local/etc/php/conf.d/imagick.ini
