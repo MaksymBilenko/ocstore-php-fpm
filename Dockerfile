@@ -16,7 +16,7 @@ RUN pecl install imagick && \
 RUN pecl install memcached && \
     docker-php-ext-enable memcached
 
-RUN pecl install memcache-4.0.5.2 \\
+RUN pecl install memcache-4.0.5.2 && \\
     docker-php-ext-enable memcache
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
