@@ -11,7 +11,10 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype &&\
     docker-php-ext-install mysqli xsl zip bz2 opcache soap gd
 
 RUN pecl install imagick && \
-    echo 'extension=imagick.so' > /usr/local/etc/php/conf.d/imagick.ini
+    docker-php-ext-enable imagick
+
+RUN pecl install memcached && \
+    docker-php-ext-enable memcached
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
