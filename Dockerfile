@@ -26,4 +26,4 @@ RUN pecl install memcache-4.0.5.2 && \
 RUN echo "upload_max_filesize = 128M;\npost_max_size = 128M\ndisplay_errors = Off\nmax_input_vars = 5000\nmax_allowed_packet=8M\nmax_execution_time=60\nmax_input_vars=10000\nmemory_limit=-1" > /usr/local/etc/php/conf.d/config.ini
 RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
 
-RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions
+RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions remoteip
