@@ -19,6 +19,9 @@ RUN pecl install memcached && \
 RUN pecl install memcache-4.0.5.2 && \
     docker-php-ext-enable memcache
 
+RUN pecl install redis && \
+    docker-php-ext-enable redis
+
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 #RUN echo "pm = dynamic \npm.max_children = 100 \npm.start_servers = 60 \npm.min_spare_servers = 40 \npm.max_spare_servers = 80 \npm.max_requests = 4000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
