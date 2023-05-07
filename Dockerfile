@@ -27,6 +27,9 @@ RUN pecl install redis && \
 RUN pecl install grpc && \
     docker-php-ext-enable grpc
 
+RUN pecl install protobuf && \
+    docker-php-ext-enable protobuf
+
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 #RUN echo "pm = dynamic \npm.max_children = 100 \npm.start_servers = 60 \npm.min_spare_servers = 40 \npm.max_spare_servers = 80 \npm.max_requests = 4000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
