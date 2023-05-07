@@ -36,3 +36,5 @@ RUN echo "upload_max_filesize = 128M;\npost_max_size = 128M\ndisplay_errors = Of
 RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
 
 RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions remoteip
+
+LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm
