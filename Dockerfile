@@ -2,8 +2,6 @@ FROM php:7.4-apache
 
 RUN apt update && apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev && apt clean
 
-MAKEFLAGS="-j $(nproc)"
-
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
@@ -12,22 +10,22 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
     docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql 
 
-RUN pecl install imagick && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
     docker-php-ext-enable imagick
 
-RUN pecl install memcached && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install memcached && \
     docker-php-ext-enable memcached
 
-RUN pecl install memcache-4.0.5.2 && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install memcache-4.0.5.2 && \
     docker-php-ext-enable memcache
 
-RUN pecl install redis && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install redis && \
     docker-php-ext-enable redis
 
-RUN pecl install grpc && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install grpc && \
     docker-php-ext-enable grpc
 
-RUN pecl install protobuf && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install protobuf && \
     docker-php-ext-enable protobuf
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
