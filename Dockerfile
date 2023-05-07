@@ -8,7 +8,7 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
     echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.4.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
-    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql 
+    MAKEFLAGS="-j $(nproc)" docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql ffi
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
     docker-php-ext-enable imagick
