@@ -28,6 +28,12 @@ RUN MAKEFLAGS="-j $(nproc)" pecl install grpc && \
 RUN MAKEFLAGS="-j $(nproc)" pecl install protobuf && \
     docker-php-ext-enable protobuf
 
+RUN curl -L https://download.newrelic.com/php_agent/archive/10.2.0.314/newrelic-php5-10.2.0.314-linux.tar.gz | tar -C /tmp -zx \
+    && export NR_INSTALL_USE_CP_NOT_LN=1 \
+    && export NR_INSTALL_SILENT=1 \
+    && /tmp/newrelic-php5-10.2.0.314-linux/newrelic-install install \
+    && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
+
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 #RUN echo "pm = dynamic \npm.max_children = 100 \npm.start_servers = 60 \npm.min_spare_servers = 40 \npm.max_spare_servers = 80 \npm.max_requests = 4000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
