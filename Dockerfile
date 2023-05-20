@@ -1,37 +1,34 @@
-FROM php:7.4-apache
+FROM php:5.6-apache
 
-RUN apt update && apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev && apt clean
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list
+RUN sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
+
+RUN apt update
+
+RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmcrypt-dev
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
-    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.4.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
+    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_5.6.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
-    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql 
+RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib --with-freetype-dir=/usr/lib && \
+    docker-php-ext-install -j $(nproc) mysql mysqli xsl zip bz2 opcache soap gd pdo_mysql mcrypt
 
-RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
-    docker-php-ext-enable imagick
+RUN pecl install imagick && \
+    echo 'extension=imagick.so' > /usr/local/etc/php/conf.d/imagick.ini
 
-RUN MAKEFLAGS="-j $(nproc)" pecl install memcached && \
-    docker-php-ext-enable memcached
-
-RUN MAKEFLAGS="-j $(nproc)" pecl install memcache-4.0.5.2 && \
+RUN pecl install memcache-2.2.7 && \
     docker-php-ext-enable memcache
 
-RUN MAKEFLAGS="-j $(nproc)" pecl install redis && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install redis-2.2.8 && \
     docker-php-ext-enable redis
 
-RUN MAKEFLAGS="-j $(nproc)" pecl install grpc && \
-    docker-php-ext-enable grpc
-
-RUN MAKEFLAGS="-j $(nproc)" pecl install protobuf && \
-    docker-php-ext-enable protobuf
-
-RUN curl -L https://download.newrelic.com/php_agent/archive/10.2.0.314/newrelic-php5-10.2.0.314-linux.tar.gz | tar -C /tmp -zx \
+RUN curl -L https://download.newrelic.com/php_agent/archive/10.3.0.315/newrelic-php5-10.3.0.315-linux.tar.gz | tar -C /tmp -zx \
     && export NR_INSTALL_USE_CP_NOT_LN=1 \
     && export NR_INSTALL_SILENT=1 \
-    && /tmp/newrelic-php5-10.2.0.314-linux/newrelic-install install \
+    && /tmp/newrelic-php5-10.3.0.315-linux/newrelic-install install \
     && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
