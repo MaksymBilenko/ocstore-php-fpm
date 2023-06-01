@@ -36,10 +36,10 @@ RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
     tar xvzf mozjpeg-master.tar.gz &&\
     cd mozjpeg-4.0.3/ &&\
     mkdir build && cd build &&\
-    sudo cmake -G"Unix Makefiles" -DPNG_SUPPORTED=ON ../ &&\
-    sudo make install &&\
-    sudo make deb &&\
-    sudo dpkg -i mozjpeg_4.0.3_amd64.deb &&\
+    cmake -G"Unix Makefiles" -DPNG_SUPPORTED=ON ../ &&\
+    make install &&\
+    make deb &&\
+    dpkg -i mozjpeg_4.0.3_amd64.deb &&\
     ln -s /opt/mozjpeg/bin/cjpeg /usr/bin/mozjpeg &&\
     ln -s /opt/mozjpeg/bin/jpegtran /usr/bin/mozjpegtran &&\
     cd / && rm -rf /tmp/mozjpeg
