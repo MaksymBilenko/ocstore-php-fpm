@@ -6,14 +6,14 @@ RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
 
 RUN apt update
 
-RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmcrypt-dev
+RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmcrypt-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
     echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_5.6.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib --with-freetype-dir=/usr/lib && \
+RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib --with-freetype-dir=/usr/lib --with-vpx-dir && \
     docker-php-ext-install -j $(nproc) mysql mysqli xsl zip bz2 opcache soap gd pdo_mysql mcrypt
 
 RUN pecl install imagick && \
@@ -30,6 +30,19 @@ RUN curl -L https://download.newrelic.com/php_agent/archive/10.3.0.315/newrelic-
     && export NR_INSTALL_SILENT=1 \
     && /tmp/newrelic-php5-10.3.0.315-linux/newrelic-install install \
     && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
+
+RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg
+    wget https://github.com/mozilla/mozjpeg/archive/refs/tags/v4.0.3.tar.gz -O mozjpeg-master.tar.gz &&\
+    tar xvzf mozjpeg-master.tar.gz &&\
+    cd mozjpeg-4.0.3/ &&\
+    mkdir build && cd build &&\
+    sudo cmake -G"Unix Makefiles" -DPNG_SUPPORTED=ON ../ &&\
+    sudo make install &&\
+    sudo make deb &&\
+    sudo dpkg -i mozjpeg_4.0.3_amd64.deb &&\
+    ln -s /opt/mozjpeg/bin/cjpeg /usr/bin/mozjpeg &&\
+    ln -s /opt/mozjpeg/bin/jpegtran /usr/bin/mozjpegtran &&\
+    cd / && rm -rf /tmp/mozjpeg
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
