@@ -31,7 +31,7 @@ RUN curl -L https://download.newrelic.com/php_agent/archive/10.3.0.315/newrelic-
     && /tmp/newrelic-php5-10.3.0.315-linux/newrelic-install install \
     && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
 
-RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg
+RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
     wget https://github.com/mozilla/mozjpeg/archive/refs/tags/v4.0.3.tar.gz -O mozjpeg-master.tar.gz &&\
     tar xvzf mozjpeg-master.tar.gz &&\
     cd mozjpeg-4.0.3/ &&\
