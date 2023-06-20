@@ -16,8 +16,13 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib --with-freetype-dir=/usr/lib --with-vpx-dir && \
     docker-php-ext-install -j $(nproc) mysql mysqli xsl zip bz2 opcache soap gd pdo_mysql mcrypt
 
+RUN pecl channel-update pecl.php.net
+
+RUN pecl install apcu-4.0.11 && \
+    docker-php-ext-enable apcu
+
 RUN pecl install imagick && \
-    echo 'extension=imagick.so' > /usr/local/etc/php/conf.d/imagick.ini
+    docker-php-ext-enable imagick
 
 RUN pecl install memcache-2.2.7 && \
     docker-php-ext-enable memcache
