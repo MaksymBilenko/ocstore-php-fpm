@@ -25,10 +25,10 @@ RUN pecl install memcache-2.2.7 && \
 RUN MAKEFLAGS="-j $(nproc)" pecl install redis-2.2.8 && \
     docker-php-ext-enable redis
 
-RUN curl -L https://download.newrelic.com/php_agent/archive/10.3.0.315/newrelic-php5-10.3.0.315-linux.tar.gz | tar -C /tmp -zx \
+RUN curl -L https://download.newrelic.com/php_agent/archive/10.10.0.1/newrelic-php5-10.10.0.1-linux.tar.gz | tar -C /tmp -zx \
     && export NR_INSTALL_USE_CP_NOT_LN=1 \
     && export NR_INSTALL_SILENT=1 \
-    && /tmp/newrelic-php5-10.3.0.315-linux/newrelic-install install \
+    && /tmp/newrelic-php5-10.10.0.1-linux/newrelic-install install \
     && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
 
 RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
