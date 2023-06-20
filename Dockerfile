@@ -4,9 +4,9 @@ RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list
 RUN sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list
 RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
 
-RUN apt update && apt upgrade -y
-
-RUN apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmcrypt-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev
+RUN apt update && apt upgrade -y && \
+    apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmcrypt-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev && \
+    apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
