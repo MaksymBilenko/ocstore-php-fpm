@@ -1,11 +1,15 @@
 FROM php:7.4-apache
 
-RUN apt update && apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev && apt clean
+RUN apt update && apt upgrade -y && \
+    apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev && \
+    apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
     echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.4.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
+
+RUN pecl channel-update pecl.php.net
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
     docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql 
@@ -28,11 +32,30 @@ RUN MAKEFLAGS="-j $(nproc)" pecl install grpc && \
 RUN MAKEFLAGS="-j $(nproc)" pecl install protobuf && \
     docker-php-ext-enable protobuf
 
+RUN pecl install --onlyreqdeps --nobuild apcu && \
+    cd "$(pecl config-get temp_dir)/apcu" && \
+    phpize && ./configure --disable-apcu-mmap && \
+    make && make install && \
+    docker-php-ext-enable apcu
+
 RUN curl -L https://download.newrelic.com/php_agent/archive/10.2.0.314/newrelic-php5-10.2.0.314-linux.tar.gz | tar -C /tmp -zx \
     && export NR_INSTALL_USE_CP_NOT_LN=1 \
     && export NR_INSTALL_SILENT=1 \
     && /tmp/newrelic-php5-10.2.0.314-linux/newrelic-install install \
     && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
+
+RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
+    wget https://github.com/mozilla/mozjpeg/archive/refs/tags/v4.1.1.tar.gz -O mozjpeg-master.tar.gz &&\
+    tar xvzf mozjpeg-master.tar.gz &&\
+    cd mozjpeg-4.1.1/ &&\
+    mkdir build && cd build &&\
+    cmake -G"Unix Makefiles" -DPNG_SUPPORTED=ON ../ &&\
+    make install &&\
+    make deb &&\
+    dpkg -i mozjpeg_4.1.1_amd64.deb &&\
+    ln -s /opt/mozjpeg/bin/cjpeg /usr/bin/mozjpeg &&\
+    ln -s /opt/mozjpeg/bin/jpegtran /usr/bin/mozjpegtran &&\
+    cd / && rm -rf /tmp/mozjpeg
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
@@ -43,4 +66,4 @@ RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
 
 RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions remoteip
 
-LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm
+LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm:7.4
