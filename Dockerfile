@@ -18,7 +18,10 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib --with-freetype-dir=/us
 
 RUN pecl channel-update pecl.php.net
 
-RUN pecl install apcu-4.0.11 && \
+RUN pecl install --onlyreqdeps --nobuild apcu-4.0.11 && \
+    cd "$(pecl config-get temp_dir)/apcu" && \
+    phpize && ./configure --disable-apc-mmap && \
+    make && make install && \
     docker-php-ext-enable apcu
 
 RUN pecl install imagick && \
