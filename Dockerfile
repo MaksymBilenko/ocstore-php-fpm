@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:7.2-apache
 
 RUN apt update && apt upgrade -y && \
     apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev libmcrypt-dev && \
@@ -7,7 +7,7 @@ RUN apt update && apt upgrade -y && \
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
-    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.4.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
+    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.2.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
 RUN pecl channel-update pecl.php.net
 
@@ -69,4 +69,4 @@ RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
 
 RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions remoteip
 
-LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm:7.4
+LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm:7.2
