@@ -13,5 +13,5 @@ jobs:
         password: ${{ secrets.GH_TOKEN }}
     - name: Build the ocstore Docker image
       run: |
-            docker build . --tag ghcr.io/maksymbilenko/ocstore-php-apache:latest
-            docker push ghcr.io/maksymbilenko/ocstore-php-apache:latest
+            docker build . --tag ghcr.io/maksymbilenko/ocstore-php-apache:7.2
+            docker push ghcr.io/maksymbilenko/ocstore-php-apache:7.2
