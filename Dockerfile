@@ -1,7 +1,7 @@
 FROM php:7.4-apache
 
 RUN apt update && apt upgrade -y && \
-    apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev && \
+    apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev libmcrypt-dev && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
@@ -12,7 +12,10 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 RUN pecl channel-update pecl.php.net
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
-    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql mcrypt
+    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql
+
+RUN MAKEFLAGS="-j $(nproc)" pecl install mcrypt && \
+    docker-php-ext-enable mcrypt
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
     docker-php-ext-enable imagick
