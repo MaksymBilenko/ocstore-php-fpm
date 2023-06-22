@@ -11,7 +11,7 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 
 RUN pecl channel-update pecl.php.net
 
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
+RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ --with-freetype-dir=/usr/include/ --with-webp-dir=/usr/include/ &&\
     docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install mcrypt && \
