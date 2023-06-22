@@ -12,7 +12,7 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 RUN pecl channel-update pecl.php.net
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
-    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql 
+    docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql mcrypt
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
     docker-php-ext-enable imagick
