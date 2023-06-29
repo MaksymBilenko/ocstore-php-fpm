@@ -16,9 +16,22 @@ RUN mkdir /tmp/webp && cd /tmp/webp && wget https://storage.googleapis.com/downl
     make install && \
     cd / && rm -rf /tmp/webp
 
+RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
+    wget https://github.com/mozilla/mozjpeg/archive/refs/tags/v4.1.1.tar.gz -O mozjpeg-master.tar.gz &&\
+    tar xvzf mozjpeg-master.tar.gz &&\
+    cd mozjpeg-4.1.1/ &&\
+    mkdir build && cd build &&\
+    cmake -G"Unix Makefiles" -DPNG_SUPPORTED=ON ../ &&\
+    make install &&\
+    make deb &&\
+    dpkg -i mozjpeg_4.1.1_amd64.deb &&\
+    ln -s /opt/mozjpeg/bin/cjpeg /usr/bin/mozjpeg &&\
+    ln -s /opt/mozjpeg/bin/jpegtran /usr/bin/mozjpegtran &&\
+    cd / && rm -rf /tmp/mozjpeg
+
 RUN pecl channel-update pecl.php.net
 
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ --with-freetype-dir=/usr/include/ --with-webp-dir=/usr/include/ &&\
+RUN docker-php-ext-configure gd --with-jpeg-dir=/opt/mozjpeg/include/ --with-freetype-dir=/usr/include/ --with-webp-dir=/usr/include/ &&\
     docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install mcrypt && \
@@ -56,19 +69,6 @@ RUN curl -L https://download.newrelic.com/php_agent/archive/10.2.0.314/newrelic-
     && export NR_INSTALL_SILENT=1 \
     && /tmp/newrelic-php5-10.2.0.314-linux/newrelic-install install \
     && rm -rf /tmp/newrelic-php5-* /tmp/nrinstall*
-
-RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
-    wget https://github.com/mozilla/mozjpeg/archive/refs/tags/v4.1.1.tar.gz -O mozjpeg-master.tar.gz &&\
-    tar xvzf mozjpeg-master.tar.gz &&\
-    cd mozjpeg-4.1.1/ &&\
-    mkdir build && cd build &&\
-    cmake -G"Unix Makefiles" -DPNG_SUPPORTED=ON ../ &&\
-    make install &&\
-    make deb &&\
-    dpkg -i mozjpeg_4.1.1_amd64.deb &&\
-    ln -s /opt/mozjpeg/bin/cjpeg /usr/bin/mozjpeg &&\
-    ln -s /opt/mozjpeg/bin/jpegtran /usr/bin/mozjpegtran &&\
-    cd / && rm -rf /tmp/mozjpeg
 
 #RUN echo "listen = /usr/local/var/run/php-fpm.sock\nlisten.mode = 0666\ncatch_workers_output = yes\nphp_admin_flag[log_errors] = on\npm.status_path = /status" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
