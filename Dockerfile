@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.2-fpm
 
 RUN apt update && apt upgrade -y && \
     apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev libmcrypt-dev && \
@@ -35,10 +35,7 @@ RUN MAKEFLAGS="-j $(nproc)" pecl install grpc && \
 RUN MAKEFLAGS="-j $(nproc)" pecl install protobuf && \
     docker-php-ext-enable protobuf
 
-RUN pecl install --onlyreqdeps --nobuild apcu && \
-    cd "$(pecl config-get temp_dir)/apcu" && \
-    phpize && ./configure --disable-apcu-mmap && \
-    make && make install && \
+RUN MAKEFLAGS="-j $(nproc)" pecl install apcu && \
     docker-php-ext-enable apcu
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install apcu_bc && \
@@ -69,7 +66,5 @@ RUN mkdir /tmp/mozjpeg && cd /tmp/mozjpeg &&\
 
 RUN echo "upload_max_filesize = 128M;\npost_max_size = 128M\ndisplay_errors = Off\nmax_input_vars = 5000\nmax_allowed_packet=8M\nmax_execution_time=60\nmax_input_vars=10000\nmemory_limit=-1" > /usr/local/etc/php/conf.d/config.ini
 RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
-
-RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions remoteip
 
 LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm:7.2
