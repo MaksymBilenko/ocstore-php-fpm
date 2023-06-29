@@ -1,13 +1,20 @@
 FROM php:7.2-apache
 
 RUN apt update && apt upgrade -y && \
-    apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev libwebp-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim webp optipng libwebp-dev libvpx-dev libmcrypt-dev && \
+    apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wget curl libmagick++-dev imagemagick libmemcached-dev zlib1g-dev cmake autoconf automake libtool nasm make pkg-config jpegoptim optipng libvpx-dev libmcrypt-dev && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
     echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.2.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
+
+RUN mkdir /tmp/webp && wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.3.1.tar.gz && \
+    cd /tmp/webp && tar xf libwebp-1.3.1.tar.gz && cd libwebp-1.3.1 && \
+    ./configure --prefix / && \
+    make -j $(nproc) && \
+    make install && \
+    cd / && rm -rf /tmp/webp
 
 RUN pecl channel-update pecl.php.net
 
