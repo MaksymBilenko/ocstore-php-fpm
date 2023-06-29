@@ -9,8 +9,8 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
     mv ioncube /opt/ioncube && \
     echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_7.2.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
-RUN mkdir /tmp/webp && wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.3.1.tar.gz && \
-    cd /tmp/webp && tar xf libwebp-1.3.1.tar.gz && cd libwebp-1.3.1 && \
+RUN mkdir /tmp/webp && cd /tmp/webp && wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.3.1.tar.gz && \
+    tar xf libwebp-1.3.1.tar.gz && cd libwebp-1.3.1 && \
     ./configure --prefix / && \
     make -j $(nproc) && \
     make install && \
