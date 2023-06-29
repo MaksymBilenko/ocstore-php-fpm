@@ -11,7 +11,7 @@ RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-
 
 RUN mkdir /tmp/webp && cd /tmp/webp && wget https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.3.1.tar.gz && \
     tar xf libwebp-1.3.1.tar.gz && cd libwebp-1.3.1 && \
-    ./configure --prefix / && \
+    ./configure --prefix /usr && \
     make -j $(nproc) && \
     make install && \
     cd / && rm -rf /tmp/webp
