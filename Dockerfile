@@ -80,3 +80,4 @@ RUN echo 'date.timezone=Europe/Kiev' >> /usr/local/etc/php/php.ini
 RUN a2enmod socache_shmcb cgi proxy_fcgi suexec rewrite actions remoteip
 
 LABEL org.opencontainers.image.source https://github.com/MaksymBilenko/ocstore-php-fpm:7.2
+
