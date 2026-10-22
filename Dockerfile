@@ -16,8 +16,8 @@ RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
 RUN MAKEFLAGS="-j $(nproc)" pecl install memcached && \
     docker-php-ext-enable memcached
 
-RUN MAKEFLAGS="-j $(nproc)" pecl install memcache && \
-    docker-php-ext-enable memcache
+#RUN MAKEFLAGS="-j $(nproc)" pecl install memcache && \
+#    docker-php-ext-enable memcache
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install redis && \
     docker-php-ext-enable redis
