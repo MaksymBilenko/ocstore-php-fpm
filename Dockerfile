@@ -5,10 +5,10 @@ RUN apt update && apt install -y libxslt-dev zlib1g-dev libzip-dev libbz2-dev wg
 RUN wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
     tar xf ioncube_loaders_lin_x86-64.tar.gz && rm ioncube_loaders_lin_x86-64.tar.gz && \
     mv ioncube /opt/ioncube && \
-    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_8.1.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
+    echo 'zend_extension = /opt/ioncube/ioncube_loader_lin_8.5.so' > /usr/local/etc/php/conf.d/00-ioncube.ini
 
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp &&\
-    MAKEFLAGS="-j $(nproc)" docker-php-ext-install mysqli xsl zip bz2 opcache soap gd pdo_mysql ffi
+    MAKEFLAGS="-j $(nproc)" docker-php-ext-install mysqli xsl zip bz2 soap gd pdo_mysql ffi
 
 RUN MAKEFLAGS="-j $(nproc)" pecl install imagick && \
     docker-php-ext-enable imagick
